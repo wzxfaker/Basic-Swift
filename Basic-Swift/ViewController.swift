@@ -198,15 +198,248 @@ class ViewController: UIViewController {
         /**
          函数实际上是一种特殊的闭包:它是一段能之后被调取的代码。闭包中的代码能访问闭包作用域中的变量和函数，即使闭包是在一个不同的作用域被执行的 - 你已经在嵌套函数的例子中看过了。你可以使用 {} 来创建一个匿名闭包。使用 in 将参数和返回值类型的声明与闭包函数体进行分离。
          */
+        let numbers = [3,2,1,5,4]
+        numbers.map { (number : Int) -> Int in
+            let result = 3 * number
+            print("数组map---",result)
+            return result
+        }
+        
+        let mapperNumbers = numbers.map({number in 3 * number})//map:Returns an array containing the results of mapping the given closure over the sequence’s elements.
+        print("闭包---",mapperNumbers);
+        
+        let sortedNumbers = numbers.sorted {$0 < $1}
+        print("排序闭包---",sortedNumbers)
+        
+        let shape = Shape()
+        shape.numberOfSides = 7;
+        let simpleDescription = shape.simpleDiscription()
+        shape.randomInt(number: 10)
+        print("访问自定义类中的方法---",simpleDescription)
+        shape.numberOfSides = 3
+        
+        let namedShape = NamedShape.init(name: "命名的形状")
+        print("子类init方法中---",namedShape.name)
+        
+        let square = Square.init(sideLength: 4, name: "一个矩形")
+        print("构造参数中面积---",square.area())
+        print("构造参数---",square.simpleDiscription())
+        
+        let circle = Circle.init(radius: 10, name: "一个圆")
+        print("构造参数圆中---",circle.simpleDiscription())
+        
+        let triangle = Triangle.init(sideLength: 3, name: "一个三角形")
+        print("setter/getter方法---",triangle.peremeter)
+        triangle.peremeter = 6
+        print("setter/getter方法---",triangle.sideLength)
+        
+        //可选值
+        let optionalSquare : Square? = Square.init(sideLength: 2, name: "square")
+        let sideLength = optionalSquare?.sideLength
+        //处理变量的可选值时，你可以在操作（比如方法、属性和子脚本）之前加 ?。如果 ? 之前的值是 nil，? 后面的东西都会被忽略，并且整个表达式返回 nil。否则，? 之后的东西都会被运行。在这两种情况下，整个表达式的值也是一个可选值。
+        print(sideLength)
+        
+        //✨✨✨---枚举和结构体
+        enum Rank : Int{
+            case ace = 1
+            case two,three,four,five,six,seven,eight,nine,ten
+            case jack,queen,king
+            func simpleDescription() -> String {
+                switch self {
+                case .ace:
+                    return "ace"
+                case .jack:
+                    return "jack"
+                case .queen:
+                    return "queen"
+                case .king:
+                    return "king"
+                default:
+                    return String(self.rawValue)
+                }
+            }
+        }
+        let ace = Rank.queen
+        let aceRawValue = ace.rawValue//rawValue就是对应的值
+        print("枚举---",ace,aceRawValue)
+        
+        if let convertedRank = Rank(rawValue : 11){//根据给出的rawValue去取枚举值
+            let threeDescription = convertedRank.simpleDescription()
+            print("枚举---",threeDescription)
+        }
+        
+        enum Suit {
+            case spades, hearts, diamonds, clubs
+            func simpleDescription() -> String {
+                switch self {
+                case .spades:
+                    return "spades"
+                case .hearts:
+                    return "hearts"
+                case .diamonds:
+                    return "diamonds"
+                case .clubs:
+                    return "clubs"
+                }
+            }
+            func color() -> String {
+                switch self {
+                case .spades:
+                    return "black"
+                case .hearts:
+                    return "red"
+                case .diamonds:
+                    return "red"
+                case .clubs:
+                    return "black"
+                }
+            }
+        }
+        let hearts = Suit.hearts
+        let heartsDescription = hearts.simpleDescription()
+        let color = hearts.color()
+        print("枚举---",heartsDescription,color)
+        //上述用了两种方式引用hearts枚举成员：给hearts常量赋值时，枚举成员Suit.hearts需要用全名，因为hearts没有显式的指定类型；而case中self已经是suit类型，所以可以用缩写
+        struct Card {
+            var rank : Rank
+            var suit : Suit
+            func simpleDescription() -> String{
+                return "The \(rank.simpleDescription()) of \(suit.simpleDescription())"
+            }
+        }
+        let threeOfSpades = Card(rank : .three,suit : .hearts)
+        print("结构体---",threeOfSpades.simpleDescription())
         
         
+        let a = SimpleClass()
+        a.adjust()
+        let aDescription = a.simpleDescription
+        print("协议---",aDescription)
+        
+        var b = SimpleStructure()
+        b.adjust()
+        let bDescription = b.simpleDescription
+        print("协议---",bDescription)
+        
+        print(10.simpleDescription)
+        var tempNum : Int = 10
+        print(tempNum.adjust())
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
+}
 
+
+//对象和类
+class Shape{
+    var angle = 0
+    func randomInt(number : Int){
+        print("对象和类---",number);
+    }
+    var numberOfSides = 0
+    func simpleDiscription() -> String {
+        return "A shape with \(numberOfSides) sides"
+    }
+}
+
+class NamedShape: Shape {
+    var name : String
+    init(name : String) {
+        self.name = name
+    }
+    
+    override func simpleDiscription() -> String {
+        return "子类中重写父类方法"
+    }
+}
+
+class Square: NamedShape {
+    var sideLength : Double
+    init(sideLength : Double,name : String) {
+        self.sideLength = sideLength
+        super.init(name: name)
+        numberOfSides = 4
+    }
+    func area() -> Double {
+        return sideLength * sideLength
+    }
+    override func simpleDiscription() -> String {
+        return "A square with sides of length \(sideLength)"
+    }
+}
+
+class Circle: NamedShape {
+    var radius : Double
+    init(radius : Double,name : String) {
+        self.radius = radius
+        super.init(name: name)
+    }
+    
+    func area() -> Double {
+        return M_PI * radius * radius
+    }
+    override func simpleDiscription() -> String {
+        return "A circle with radius \(radius) has area \(area())"
+    }
+}
+
+class Triangle: NamedShape {
+    var sideLength : Double
+    init(sideLength : Double,name : String) {
+        self.sideLength = sideLength
+        super.init(name: name)
+        numberOfSides = 3
+    }
+    //setter、getter方法
+    var peremeter : Double{
+        get {
+            return 3.0*sideLength
+        }
+        set {
+            sideLength = newValue / 3.0//newValue就是新的值
+        }
+    }
+    override func simpleDiscription() -> String {
+        return "A triangle with sides of length \(sideLength)"
+    }
+}
+
+
+
+//✨✨✨协议和扩展
+protocol ExampleProtocol{
+    var simpleDescription : String {get set}//property in protocol must have explicit {get} or {get set} specifier
+    mutating func adjust()
+}
+
+class SimpleClass: ExampleProtocol {
+    var simpleDescription: String = "A very simple class"
+    var anotherProperty : Int = 1888888
+    func adjust() {
+        simpleDescription += "really?"
+    }
+}
+
+struct SimpleStructure : ExampleProtocol {
+    var simpleDescription: String = "A simple structure"
+    mutating func adjust() {
+        simpleDescription += "(adjusted)"
+    }
+    //注意声明 SimpleStructure 时候 mutating 关键字用来标记一个会修改结构体的方法。SimpleClass 的声明不需要标记任何方法，因为类中的方法通常可以修改类属性（类的性质)
+}
+
+//使用 extension 来为现有的类型添加功能，比如新的方法和计算属性。你可以使用扩展让某个在别处声明的类型来遵守某个协议，这同样适用于从外部库或者框架引入的类型。
+
+extension Int : ExampleProtocol {
+    var simpleDescription : String {
+        return "The number is \(self)"
+    }
+    mutating func adjust() {
+        self += 20
+    }
 }
 
