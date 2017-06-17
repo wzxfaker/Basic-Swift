@@ -25,6 +25,18 @@ class ViewController: UIViewController {
         let labelwidth = label + String(width)
         print(labelwidth)
         
+        /*
+            元组（tuples）把多个值组合成一个复合值。元组内的值可以是任意类型，并不要求是相同类型
+            1.获取元祖中的值时可以通过下标获取.0,.1
+            2.可以在定义元祖的时候给单个元素命名，然后通过元素名获取
+         Attention:
+         元组在临时组织值的时候很有用，但是并不适合创建复杂的数据结构。如果你的数据结构并不是临时使用，请使用类或者结构体而不是元组。请参考类和结构体。
+        */
+        let httpError = (statusCode:404,stautsMess:"Connection Error");
+//        let (statusCode,statusMess) = (404,"Connection Error");
+//        print("元祖---The statusCode is \(statusCode)");
+        print("元祖---The statusCode is \(httpError.statusCode)");
+        
         //类型转换\()
         let apples = 3
         let oranges = 5
@@ -54,6 +66,10 @@ class ViewController: UIViewController {
         print("控制流---",initialValue)
         
         //可选值
+        var optionalStr : String? = "Hi";
+        optionalStr = nil;
+        
+        
         let optionalString : String? = "Hello"
         print(optionalString == nil)
         
@@ -70,6 +86,11 @@ class ViewController: UIViewController {
         let fullName : String = "James"
         let greetingInfo = "Hi \(nickName ?? fullName)"
         print("可选值---",greetingInfo)
+        //强制解析
+        var forceTempStr : String?;
+        if forceTempStr != nil {
+            print("强制解析---forceTempStr has a String value \(forceTempStr!)")
+        }
         
         //switch
         let str = "James"
@@ -393,6 +414,7 @@ class ViewController: UIViewController {
             return commonArr
         }
         print("泛型4---\(commonElements([1,2,3], [2,3,4]))")
+        
     }
     
     override func didReceiveMemoryWarning() {
