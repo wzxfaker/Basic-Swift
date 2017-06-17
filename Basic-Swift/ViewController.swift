@@ -199,14 +199,16 @@ class ViewController: UIViewController {
          函数实际上是一种特殊的闭包:它是一段能之后被调取的代码。闭包中的代码能访问闭包作用域中的变量和函数，即使闭包是在一个不同的作用域被执行的 - 你已经在嵌套函数的例子中看过了。你可以使用 {} 来创建一个匿名闭包。使用 in 将参数和返回值类型的声明与闭包函数体进行分离。
          */
         let numbers = [3,2,1,5,4]
+        var numArr = [Int]()
         numbers.map { (number : Int) -> Int in
             let result = 3 * number
-            print("数组map---",result)
+            numArr.append(result)
             return result
         }
+        print("数组map---",numArr)
         
         let mapperNumbers = numbers.map({number in 3 * number})//map:Returns an array containing the results of mapping the given closure over the sequence’s elements.
-        print("闭包---",mapperNumbers);
+        print("闭包---",mapperNumbers)
         
         let sortedNumbers = numbers.sorted {$0 < $1}
         print("排序闭包---",sortedNumbers)
@@ -321,9 +323,76 @@ class ViewController: UIViewController {
         let bDescription = b.simpleDescription
         print("协议---",bDescription)
         
-        print(10.simpleDescription)
+        print("extension",10.simpleDescription)
         var tempNum : Int = 10
-        print(tempNum.adjust())
+        print("extension",tempNum.adjust())
+        var tempDouble : Double = 10.88
+        print("extension",tempDouble.transformToInt())
+        
+        //错误处理（未学习）
+        enum PrinterError : Error {
+            case outOfPaper
+            case noToner
+            case noFire
+        }
+        func send(job: Int, toPrinter printerName: String) throws -> String {
+            if printerName == "Never Has Toner" {
+                throw PrinterError.noToner
+            }
+            return "Job sent"
+        }
+        
+        
+        
+        //✨✨✨泛型 ：在尖括号里写一个名字来创建一个泛型函数或者类型。
+        func repeatItem<Item>(repeating item : Item,numberOfTimes : Int) -> [Item]{//其中Item可以是任意类型
+            var result = [Item]()//声明一个空数组
+            for _ in 0..<numberOfTimes {
+                result.append(item)
+            }
+            return result
+        }
+        print("泛型1---",repeatItem(repeating: 888, numberOfTimes: 4))
+        
+        //重新实现swift标准库中的可选类型
+        enum OptionalValue<Wrapped> {
+            case None
+            case Some(Wrapped)
+        }
+        var possibleInteger : OptionalValue<Int> = .None
+        possibleInteger = .Some(100)
+        print("泛型2---",possibleInteger)
+        
+        
+        //在类型名后面使用 where 来指定对类型的需求，比如，限定类型实现某一个协议，限定两个类型是相同的，或者限定某个类必须有一个特定的父类
+        func anyCommonElements<T : Sequence,U : Sequence>(_ lhs : T,_ rhs : U) -> Bool
+        where T.Iterator.Element : Equatable,T.Iterator.Element == U.Iterator.Element{//T和U遵守Sequence协议，及遍历数组的协议,其中lhs和rhs才是参数
+            for lhsItem in lhs {
+                for rhsItem in rhs {
+                    if lhsItem == rhsItem {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+        print("泛型3---\(anyCommonElements([1,2,3], [6]))")
+    
+    
+        //找到两个数组中共同的元素
+        func commonElements<M : Sequence,N : Sequence>(_ lhs : M,_ rhs : N) -> [Int]
+        where M.Iterator.Element : Equatable, M.Iterator.Element == N.Iterator.Element{
+            var commonArr = [Int]()
+            for lhsItem in lhs {
+                for rhsItem in rhs {
+                    if lhsItem == rhsItem {
+                        commonArr.append(rhsItem as! Int)
+                    }
+                }
+            }
+            return commonArr
+        }
+        print("泛型4---\(commonElements([1,2,3], [2,3,4]))")
     }
     
     override func didReceiveMemoryWarning() {
@@ -435,11 +504,24 @@ struct SimpleStructure : ExampleProtocol {
 //使用 extension 来为现有的类型添加功能，比如新的方法和计算属性。你可以使用扩展让某个在别处声明的类型来遵守某个协议，这同样适用于从外部库或者框架引入的类型。
 
 extension Int : ExampleProtocol {
-    var simpleDescription : String {
-        return "The number is \(self)"
+    internal var simpleDescription: String {
+        get {
+            return "哈哈哈"
+        }
+        set {
+            simpleDescription = "嗯嗯嗯"
+        }
     }
     mutating func adjust() {
         self += 20
     }
 }
+
+extension Double {
+    mutating func transformToInt() -> Int{
+        return 10000
+    }
+
+}
+
 
