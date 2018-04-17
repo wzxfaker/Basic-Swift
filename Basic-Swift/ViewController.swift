@@ -56,7 +56,7 @@ class ViewController: UIViewController {
         print("字典数组---",emptyArr,emptyDic)
         
         //控制流
-        let testArr = [60,26,78,69,38,55]
+        var testArr = [60,26,78,69,38,55]
         var initialValue = 0
         for temp in testArr {
             if temp > 50 {
@@ -64,6 +64,7 @@ class ViewController: UIViewController {
             }
         }
         print("控制流---",initialValue)
+        print("控制流---",testArr.removeLast());//返回的是最后一个被删除的元素
         
         //可选值
         var optionalStr : String? = "Hi";
